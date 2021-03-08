@@ -1,0 +1,193 @@
+<div class="modal-dialog modal-lg" id="folder_manager">
+  <div class="modal-content">
+    <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h4 class="modal-title">{{ heading_title }}</h4><br>
+      <div class="alert alert-warning">
+      	<strong>Alert!</strong> {{ alert_image_comparison_text }}
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="col-sm-5"><a href="{{ parent }}" data-toggle="tooltip" title="{{ button_parent }}" id="button-parent" class="btn btn-default"><i class="fa fa-level-up"></i></a> <a href="{{ refresh }}" data-toggle="tooltip" title="{{ button_refresh }}" id="button-refresh" class="btn btn-default"><i class="fa fa-refresh"></i></a>
+          <button type="button" data-toggle="tooltip" title="{{ button_folder }}" id="button-folder" class="btn btn-default"><i class="fa fa-folder"></i></button>
+          <button type="button" data-toggle="tooltip" title="{{ button_delete }}" id="button-delete" class="btn btn-danger"><i class="fa fa-trash-o"></i></button>
+        </div>
+        <div class="col-sm-7">
+          <div class="input-group">
+            <input type="text" name="search" value="{{ filter_name }}" placeholder="{{ entry_search }}" class="form-control">
+            <span class="input-group-btn">
+            <button type="button" data-toggle="tooltip" title="{{ button_search }}" id="button-search" class="btn btn-primary"><i class="fa fa-search"></i></button>
+            </span></div>
+        </div>
+      </div>
+      <hr />
+      {% for image in images %}
+      <div class="row">
+        {% for image in image %}
+        <div class="col-sm-3 text-center">
+          {% if image.type == 'directory' %}
+          <div class="text-center"><a href="{{ image.href }}" class="directory" style="vertical-align: middle;"><i class="fa fa-folder fa-5x"></i></a></div>
+          <label>
+            <input type="radio" id="path" name="path" value="{{ image.path }}" />
+            {{ image.name }}</label>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      <br />
+    {% endfor %}
+    </div>
+    <div class="modal-footer">
+    	<div>{{ pagination }}</div>
+    	<div><button type="button" id="save_path" class="btn btn-default">Choose</button></div>
+    </div>
+  </div>
+</div>
+<script type="text/javascript"><!--
+{% if target %}
+$('a.thumbnail').on('click', function(e) {
+	e.preventDefault();
+
+	{% if thumb %}
+	$('#{{ thumb }}').find('img').attr('src', $(this).find('img').attr('src'));
+	{% endif %}
+
+	$('#{{ target }}').attr('value', $(this).parent().find('input').attr('value'));
+
+	$('#modal-image').modal('hide');
+});
+{% endif %}
+
+$('a.directory').on('click', function(e) {
+	e.preventDefault();
+
+	$('#modal-image').load($(this).attr('href'));
+});
+
+$('.pagination a').on('click', function(e) {
+	e.preventDefault();
+
+	$('#modal-image').load($(this).attr('href'));
+});
+
+$('#button-parent').on('click', function(e) {
+	e.preventDefault();
+
+	$('#modal-image').load($(this).attr('href'));
+});
+
+$('#button-refresh').on('click', function(e) {
+	e.preventDefault();
+
+	$('#modal-image').load($(this).attr('href'));
+});
+
+$('input[name=\'search\']').on('keydown', function(e) {
+	if (e.which == 13) {
+		$('#button-search').trigger('click');
+	}
+});
+
+$('#button-search').on('click', function(e) {
+	var url = 'index.php?route=common/folder_manager&user_token={{ user_token }}&directory={{ directory }}';
+
+	var filter_name = $('input[name=\'search\']').val();
+
+	if (filter_name) {
+		url += '&filter_name=' + encodeURIComponent(filter_name);
+	}
+
+	{% if thumb %}
+	url += '&thumb=' + '{{ thumb }}';
+	{% endif %}
+
+	{% if target %}
+	url += '&target=' + '{{ target }}';
+	{% endif %}
+
+	$('#modal-image').load(url);
+});
+//--></script>
+<script type="text/javascript"><!--
+$('#button-folder').popover({
+	html: true,
+	placement: 'bottom',
+	trigger: 'click',
+	title: '{{ entry_folder }}',
+	content: function() {
+		html  = '<div class="input-group">';
+		html += '  <input type="text" name="folder" value="" placeholder="{{ entry_folder }}" class="form-control">';
+		html += '  <span class="input-group-btn"><button type="button" title="{{ button_folder }}" id="button-create" class="btn btn-primary"><i class="fa fa-plus-circle"></i></button></span>';
+		html += '</div>';
+
+		return html;
+	}
+});
+
+$('#button-folder').on('shown.bs.popover', function() {
+	$('#button-create').on('click', function() {
+		$.ajax({
+			url: 'index.php?route=common/folder_manager/folder&user_token={{ user_token }}&directory={{ directory }}',
+			type: 'post',
+			dataType: 'json',
+			data: 'folder=' + encodeURIComponent($('input[name=\'folder\']').val()),
+			beforeSend: function() {
+				$('#button-create').prop('disabled', true);
+			},
+			complete: function() {
+				$('#button-create').prop('disabled', false);
+			},
+			success: function(json) {
+				if (json['error']) {
+					alert(json['error']);
+				}
+
+				if (json['success']) {
+					alert(json['success']);
+
+					$('#button-refresh').trigger('click');
+				}
+			},
+			error: function(xhr, ajaxOptions, thrownError) {
+				alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+			}
+		});
+	});
+});
+$('#modal-image #button-delete').on('click', function(e) {
+	if(!$('input[name^=\'path\']').prop("checked")) {
+		alert('Select Any Directory!');
+		return false;
+	}else{
+		if (confirm('{{ text_confirm }}')) {
+			$.ajax({
+				url: 'index.php?route=common/folder_manager/delete&user_token={{ user_token }}',
+				type: 'post',
+				dataType: 'json',
+				data: $('input[name^=\'path\']:checked'),
+				beforeSend: function() {
+					$('#button-delete').prop('disabled', true);
+				},
+				complete: function() {
+					$('#button-delete').prop('disabled', false);
+				},
+				success: function(json) {
+					if (json['error']) {
+						alert(json['error']);
+					}
+
+					if (json['success']) {
+						alert(json['success']);
+
+						$('#button-refresh').trigger('click');
+					}
+				},
+				error: function(xhr, ajaxOptions, thrownError) {
+					alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+				}
+			});
+		}
+	}
+});
+//--></script>

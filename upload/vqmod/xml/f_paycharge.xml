@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+	<id>f_paycharge</id>
+	<version>7.0</version>
+	<vqmver required="true">2.6.0</vqmver>
+	<author>Fabio Messina - fabiome77@hotmail.it</author>
+
+<file path="catalog/controller/checkout/payment_method.php">
+	<operation>
+		<search><![CDATA[
+			if ($method) {
+		]]></search>
+		<add position="after"><![CDATA[
+		if ($this->config->get('total_paycharge_status')) {
+			$paycharge_total = $this->cart->getTotal();
+
+			if (isset($this->session->data['shipping_method'])) {
+				$paycharge_total += $this->tax->calculate($this->session->data['shipping_method']['cost'], $this->session->data['shipping_method']['tax_class_id'], $this->config->get('config_tax'));
+			}
+
+			foreach ($this->config->get('total_paycharge') as $paycharge) {
+				$status = true;
+
+				if (!isset($paycharge['step5vals']) && !isset($paycharge['step5calc'])) {
+					$status = false;
+				} elseif ($paycharge['payment_method'] != $method['code']) {
+					$status = false;
+				} elseif ($paycharge_total < $paycharge['cart_min'] || $paycharge_total > $paycharge['cart_max']) {
+					$status = false;
+				} elseif ($paycharge['customer_group_id'] && $paycharge['customer_group_id'] != $this->customer->getGroupId()) {
+					$status = false;
+				//} elseif (!$paycharge['customer_group_id'] && $this->customer->isLogged()) {
+					//$status = false;
+				} elseif ($paycharge['geo_zone_id'] && isset($this->session->data['payment_address'])) {
+					$query = $this->db->query("SELECT * FROM " . DB_PREFIX . "zone_to_geo_zone WHERE geo_zone_id = '" . (int)$paycharge['geo_zone_id'] . "' AND country_id = '" . (int)$this->session->data['payment_address']['country_id'] . "' AND (zone_id = '" . (int)$this->session->data['payment_address']['zone_id'] . "' OR zone_id = '0')");
+
+					if (!$query->num_rows) {
+						$status = false;
+					}
+				}
+
+				if ($status) {
+					$text = '';
+					$value = 0;
+					$charge_p = $paycharge['valuep'];
+					$charge_f = $paycharge['valuef'];
+
+					if ($charge_p) {
+						if (isset($paycharge['formula'])) {
+							$text .= round((($charge_p / 100) +1) * ($charge_p / 100) * 100, 2) . '%';
+							$value += (($charge_p / 100) * $paycharge_total) / (1- ($charge_p / 100));
+						} else {
+							$text .= $charge_p . '%';
+							$value += ($paycharge_total / 100 * $charge_p);
+						}
+					}
+
+					if ($charge_p && $charge_f && substr($charge_f, 0, 1) != '-') {
+						$text .= ' + '; // Add separator
+					}
+
+					if ($charge_f) {
+						$text .= $charge_f; // Or: $this->currency->format($charge_f, $this->session->data['currency']);
+						$value += $charge_f;
+					}
+
+					$method['title'] .= ' (';
+					if (isset($paycharge['step5vals'])) {
+						$method['title'] .= $text;
+					}
+					if (isset($paycharge['step5vals']) && isset($paycharge['step5calc'])) {
+						$method['title'] .= ' = ';
+					}
+					if (isset($paycharge['step5calc'])) {
+						$method['title'] .= $this->currency->format($value, $this->session->data['currency']);
+					}
+					$method['title'] .= ')';
+				}
+			}
+		}
+		]]></add>
+	</operation>
+</file>
+</modification>

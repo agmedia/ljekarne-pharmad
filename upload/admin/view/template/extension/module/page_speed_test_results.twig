@@ -1,0 +1,169 @@
+{% if errors %}
+<div><h3>{{ errors }}</h3></div>
+{% else %}
+<div class="container-fluid">
+    <div class="row" id="top-content">
+        <div class="col-sm-12">
+            <div>
+            <p class="label label-default">{{ website }}</p>
+            </div>
+            <br>
+            <div>
+            <span class="label label-info">{{ website_title }}</span>
+            <span class="label {{ label }}">{{ website_status }}</span>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row" id="speed-result">
+        <div class="col-sm-3">
+            <div class="counter">
+                <div class="{{ score_msg }} text-center msg">{{ score_msg }}</div>
+                <div class="count">{{ score }}&nbsp;/&nbsp;100</div>
+            </div>
+        </div>
+        <div class="col-sm-3"></div>
+        <div class="col-sm-6 pull-right">
+            {% if image %}
+            <img src="{{ image }}" width="320" height="240" style="float: inherit;">
+            {% endif %}
+        </div>
+    </div>
+    <br>
+    <div class="row" id="stats-table">
+        <div class="col-sm-6 table-responsive">
+            <h3>{{ text_table_size }}</h3>
+            <table class="table">
+                <thead>
+                    <th>{{ text_field_content_type }}</th>
+                    <th>{{ text_field_content_size }}</th>
+                </thead>
+                {% for key,value in page_size_stats %}
+                <tr>
+                    <td>{{ key }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="col-sm-6 table-responsive">
+            <h3>{{ text_table_request }}</h3>
+            <table class="table">
+                <thead>
+                    <th>{{ text_field_content_type }}</th>
+                    <th>{{ text_field_content_request }}</th>
+                </thead>
+                {% for key,value in page_request_stats %}
+                <tr>
+                    <td>{{ key }}</td>
+                    <td>{{ value }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    <div class="row" id="optimizations">
+        <div class="col-sm-12">
+            {% if possible_optimisation %}
+            <h3>{{ text_possible_optimisation }}</h3>
+            <div class="panel-group">
+                {% set i = 0 %}
+                {% for opt in possible_optimisation %}
+                {% set i = i + 1 %}
+                <div class="panel panel-warning">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#collapse-result{{ i }}">{{ opt.rulename }}</a>
+                        </h4>
+                    </div>
+                    <div id="collapse-result{{ i }}" class="panel-collapse collapse"> 
+                        <div class="note">{{ opt.summary }}</div>
+                        {% if opt.urlblocks.header %}
+                        <p>{{ opt.urlblocks.header }}</p>
+                        {% endif %}
+                        {% if opt.urlblocks.link %}
+                        {% for link in opt.urlblocks.link %}
+                        <p>{{ link.link }}</p>
+                        <ul class="list-group">
+                            {% for urls in link.urls %}
+                            <li class="list-group-item">{{ urls }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    <br>
+    <div class="row" id="optimizations">
+        <div class="col-sm-12">
+            {% if optimisation_found %}
+            <h3>{{ text_optimisation_found }}</h3>
+            <div class="panel-group">
+                <div class="panel panel-success">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                        <a data-toggle="collapse" href="#found">{{ text_optimisation_found }}</a>
+                        </h4>
+                    </div>
+                    <div id="found" class="panel-collapse collapse">
+                        <ul class="list-group">
+                            {% for found in optimisation_found %}
+                            <li class="list-group-item">
+                                <h4>{{ found.rulename }}</h4>
+                                <div>{{ found.summary }}</div>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+<style type="text/css">
+#top-content span{
+    font-size: 16px;
+}
+#speed-result .counter{
+    background-color: #EEEEEE;
+}
+#speed-result .counter .msg{
+    text-transform: uppercase;
+    font-size: 25px;
+    font-weight: bolder;
+    padding: 10px 0px 5px 0px;
+}
+#speed-result .counter .msg.poor{color: red;}
+#speed-result .counter .msg.good{color: #fda100;}
+#speed-result .counter .msg.excellent{color: #009a2d;}
+#speed-result .counter .count{
+    font-size: 20px;
+    text-align: center;
+    padding: 0px 0px 10px 0px;
+}
+#optimizations h3{
+    font-weight: bolder;
+}
+#optimizations .panel-collapse .note{
+    padding: 5px 0px 5px 15px;
+    font-weight: 700;
+    font-size: 13px;
+}
+#optimizations .panel-collapse p{
+    font-size: 14px;
+    padding: 5px 0px 5px 15px;
+}
+#optimizations .panel{
+    background-color: #EEEEEE;
+}
+#stats-table .table-responsive h3{
+    font-weight: 600;
+}
+</style>
+{% endif %}

@@ -1,0 +1,30 @@
+[18-Feb-2021 11:55:59 UTC] PHP Fatal error:  Uncaught Exception: Error: Could not load template /home/ljekarnepharmadh/public_html/upload/admin/view/template/catalog/product_form.twig! in /home/ljekarnepharmadh/public_html/storage/modification/system/library/template/twig.php:17
+Stack trace:
+#0 /home/ljekarnepharmadh/public_html/upload/system/library/template.php(51): Template\Twig->render('catalog/product...', '')
+#1 /home/ljekarnepharmadh/public_html/upload/vqmod/vqcache/vq2-_home_ljekarnepharmadh_public_html_storage_modification_system_engine_loader.php(125): Template->render('catalog/product...', '')
+#2 /home/ljekarnepharmadh/public_html/storage/modification/admin/controller/catalog/product.php(1471): Loader->view('catalog/product...', Array)
+#3 /home/ljekarnepharmadh/public_html/storage/modification/admin/controller/catalog/product.php(396): ControllerCatalogProduct->getForm()
+#4 /home/ljekarnepharmadh/public_html/upload/vqmod/vqcache/vq2-_home_ljekarnepharmadh_public_html_storage_modification_system_engine_action.php(79): ControllerCatalogProduct- in /home/ljekarnepharmadh/public_html/storage/modification/system/library/template/twig.php on line 17
+[18-Feb-2021 11:56:01 UTC] PHP Fatal error:  Uncaught Exception: Error: Could not load template /home/ljekarnepharmadh/public_html/upload/admin/view/template/catalog/product_form.twig! in /home/ljekarnepharmadh/public_html/storage/modification/system/library/template/twig.php:17
+Stack trace:
+#0 /home/ljekarnepharmadh/public_html/upload/system/library/template.php(51): Template\Twig->render('catalog/product...', '')
+#1 /home/ljekarnepharmadh/public_html/upload/vqmod/vqcache/vq2-_home_ljekarnepharmadh_public_html_storage_modification_system_engine_loader.php(125): Template->render('catalog/product...', '')
+#2 /home/ljekarnepharmadh/public_html/storage/modification/admin/controller/catalog/product.php(1471): Loader->view('catalog/product...', Array)
+#3 /home/ljekarnepharmadh/public_html/storage/modification/admin/controller/catalog/product.php(396): ControllerCatalogProduct->getForm()
+#4 /home/ljekarnepharmadh/public_html/upload/vqmod/vqcache/vq2-_home_ljekarnepharmadh_public_html_storage_modification_system_engine_action.php(79): ControllerCatalogProduct- in /home/ljekarnepharmadh/public_html/storage/modification/system/library/template/twig.php on line 17
+[18-Feb-2021 11:56:03 UTC] PHP Fatal error:  Uncaught Exception: Error: Could not load template /home/ljekarnepharmadh/public_html/upload/admin/view/template/catalog/product_form.twig! in /home/ljekarnepharmadh/public_html/storage/modification/system/library/template/twig.php:17
+Stack trace:
+#0 /home/ljekarnepharmadh/public_html/upload/system/library/template.php(51): Template\Twig->render('catalog/product...', '')
+#1 /home/ljekarnepharmadh/public_html/upload/vqmod/vqcache/vq2-_home_ljekarnepharmadh_public_html_storage_modification_system_engine_loader.php(125): Template->render('catalog/product...', '')
+#2 /home/ljekarnepharmadh/public_html/storage/modification/admin/controller/catalog/product.php(1471): Loader->view('catalog/product...', Array)
+#3 /home/ljekarnepharmadh/public_html/storage/modification/admin/controller/catalog/product.php(396): ControllerCatalogProduct->getForm()
+#4 /home/ljekarnepharmadh/public_html/upload/vqmod/vqcache/vq2-_home_ljekarnepharmadh_public_html_storage_modification_system_engine_action.php(79): ControllerCatalogProduct- in /home/ljekarnepharmadh/public_html/storage/modification/system/library/template/twig.php on line 17
+[01-Mar-2021 08:41:25 UTC] PHP Fatal error:  Uncaught Error: Access to undeclared static property: DB::$query_count in /home/ljekarnepharmadh/public_html/upload/admin/controller/extension/module/catalog/product.php:575
+Stack trace:
+#0 /home/ljekarnepharmadh/public_html/upload/vqmod/vqcache/vq2-system_engine_action.php(79): ControllerExtensionModuleCatalogProduct->data(Array)
+#1 /home/ljekarnepharmadh/public_html/upload/vqmod/vqcache/vq2-system_engine_loader.php(48): Action->execute(Object(Registry), Array)
+#2 /home/ljekarnepharmadh/public_html/upload/admin/controller/extension/module/product_quick_edit.php(467): Loader->controller('extension/modul...')
+#3 /home/ljekarnepharmadh/public_html/upload/vqmod/vqcache/vq2-system_engine_action.php(79): ControllerExtensionModuleProductQuickEdit->data()
+#4 /home/ljekarnepharmadh/public_html/upload/admin/controller/startup/router.php(26): Action->execute(Object(Registry), Array)
+#5 /home/ljekarnepharmadh/public_html/upload/vqmod/vqcache/vq2-system_engine_action.php(79): ControllerStartupRouter->index()
+#6 /home/lje in /home/ljekarnepharmadh/public_html/upload/admin/controller/extension/module/catalog/product.php on line 575
