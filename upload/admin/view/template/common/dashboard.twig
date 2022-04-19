@@ -103,6 +103,8 @@
 
             <!--  <li><a href="{{ link_sync_manager }}" class="btn btn-info"><i class="fa fa-cogs" aria-hidden="true"></i> Sync Manager</a></li> -->
 
+              <li><button type="button" id="button-actions" title="Download Novih Akcija" data-loading-text="{{ text_loading }}" class="btn btn-info"><i class="fa fa-upload"></i> Download Novih Akcija</button></li>
+
           </ul>
       </div>
 
@@ -134,16 +136,40 @@ $('#button-setting').on('click', function() {
 		},
 		success: function(html) {
 			$('#modal-developer').remove();
-			
+
 			$('body').prepend('<div id="modal-developer" class="modal">' + html + '</div>');
-			
+
 			$('#modal-developer').modal('show');
 		},
 		error: function(xhr, ajaxOptions, thrownError) {
 			alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
 		}
 	});	
-});	
+});
+
+      $('#button-actions').on('click', (e) => {
+          $.ajax({
+              url: 'https://www.ljekarne-pharmad.hr/index.php?route=extension/feed/xml_update_feed/updateSpecials&key=v9jdnH6afskP92rdUatbcQQZLEu4QcW1',
+              dataType: 'html',
+              beforeSend: function() {
+                  $('#button-actions').button('loading');
+              },
+              success: function(json) {
+                  console.log(JSON.parse(json))
+                  console.log(JSON.parse(json).status)
+                  if (JSON.parse(json).status) {
+                      console.log('OK')
+                      $('#button-actions').button('reset');
+                  } else {
+                      console.log('NOOK')
+                      $('#button-actions').button('error');
+                  }
+              },
+              error: function(xhr, ajaxOptions, thrownError) {
+                  alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+              }
+          });
+      })
 //--></script> 
 </div>
 {{ footer }}
